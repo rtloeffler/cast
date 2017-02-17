@@ -39,8 +39,8 @@ limitations under the License.
     <title>Cast Hello Text</title>
   </head>
   <body>
-  <iframe id="message" src=""></iframe>
-  <!-- <div id="message">Talk to me</div> -->
+  <!-- <iframe id="message" src=""></iframe> -->
+  <div id="message"><iframe id="message" src="https://p.datadoghq.com/sb/ce28c97dc-f544d63d30"></iframe></div>
     <script type="text/javascript" src="//www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js"></script>
     <script type="text/javascript">
       window.onload = function() {
@@ -95,8 +95,8 @@ limitations under the License.
       };
 
       // utility function to display the text message in the input field
-      function displayText(src) {
-        console.log(src);
+      function displayText(text) {
+        console.log(text);
         document.getElementById('message').innerText = src;
         window.castReceiverManager.setApplicationState(text);
       };
