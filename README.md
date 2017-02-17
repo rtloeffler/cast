@@ -1,32 +1,75 @@
-# HelloText-Chrome
+# URL Cast Receiver
 
-This Google Cast demo application shows how to send messages from an Chrome desktop browser to a receiver using a custom namespace.
+**Custom chromecast receiver to display webpages without tab casting**
 
-## Dependencies
-* Chrome browser.
+Try it with the [sender demo](https://demille.github.io/url-cast-receiver).
 
-## Setup Instructions
-* Just check out the code from GitHub, host chromehellotext.html on your own server and open that page in your Chrome browser
-* If you don't want to use the sample App ID, you need to do the following steps
-* Get a Chromecast device and get it set up for development: https://developers.google.com/cast/docs/developers#Get_started
-* Register an application on the Developers Console (http://cast.google.com/publish). Select the Custom Receiver option and specify the URL to where you are hosting the receiver.html file (You can use Google Drive to host your files: https://support.google.com/drive/answer/2881970?hl=en). You will get an App ID when you finish registering your application.
-* Setup the project dependencies
-* Insert your App ID in the chromehellotext.html file of the project (look for applicationID in that file)
-* Upload the chromehellotext.html file to your hosting server and load the URL for that file in your Chrome browser.
+## Usage
 
-## References and How to report bugs
-* Cast APIs: http://developers.google.com/cast
-* Design Checklist (http://developers.google.com/cast/docs/design_checklist)
-* If you find any issues, please open a bug here on GitHub
+You can use a hosted version now (use **5CB45E5A** for your appId),
+or you can clone / customize this repo and host your own.
 
-## How to make contributions?
-Please read and follow the steps in the CONTRIBUTING.md
+URLs are sent to the receiver by sending messages on the `urn:x-cast:com.url.cast` namespace.
+
+There are two ways to cast a URL to the reciever, each with pros and cons:
+
+**Method 1:** Loading the URL in an iframe
+- Pros: Reciever stays intact after loading page
+- Cons: `X-Frame-Options: SAMEORIGIN` errors
+
+```js
+// iframe method
+var namespace = 'urn:x-cast:com.url.cast';
+var msg = {
+    "type": "iframe",
+    "url": "http://example.com"
+}
+
+session.sendMessage(namespace, msg, onSuccess, onErr);
+// reciever is still alive
+```
+
+**Method 2:** Changing the window location on the chromecast
+- Pros: Can load any URL, no iframe origin issues
+- Cons: Reciever gets overridden with page load, so you can no longer communicate with it without stopping the cast and restarting.
+
+```js
+// iframe method
+var namespace = 'urn:x-cast:com.url.cast';
+var msg = {
+    "type": "loc",
+    "url": "http://example.com"
+}
+
+session.sendMessage(namespace, msg, onSuccess, onErr);
+// receiver is now basically dead to you
+```
+
+## Notes
+
+- The chromecast renders webpages at a viewport size of 1280x720 instead of 1080x1920 like you might expect, so be prepared for that.
+
+- The default background color on the chromecast is black, so pages loaded with method 2 (the window location) might have a surprise black background.  If you use the iframe method, the receiver sets the body to white.
 
 ## License
-See LICENSE
 
-## Terms
-Your use of this sample is subject to, and by using or downloading the sample files you agree to comply with, the [Google APIs Terms of Service](https://developers.google.com/terms/) and the [Google Cast SDK Additional Developer Terms of Service](https://developers.google.com/cast/docs/terms/).
+The MIT License (MIT)
 
-## Google+
-Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl/TPLDxj)
+Copyright (c) 2015 Sterling DeMille &lt;sterlingdemille@gmail.com&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
